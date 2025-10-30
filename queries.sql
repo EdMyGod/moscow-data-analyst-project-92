@@ -43,3 +43,44 @@ inner join products p on p.product_id = s.product_id
 group by e.first_name, e.last_name, EXTRACT(dow FROM s.sale_date)
 order by extract(dow from s.sale_date), seller 
 -- по дням недели
+
+SELECT (case
+	when customers.age <= 25 then '16-25' 
+	when customers.age <= 40 then '26-40' 
+	else '40+'
+end) as age_category,
+Count(*) as age_count 
+FROM public.customers
+group by age_category
+order by age_category 
+-- группы возрастов
+
+select to_char(s.sale_date, 'yyyy-mm') as selling_month,
+count(distinct s.customer_id) as total_customers,
+floor(sum(s.quantity*p.price)) as income
+from sales s 
+inner join products p on p.product_id = s.product_id
+group by to_char(s.sale_date, 'yyyy-mm')
+order by to_char(s.sale_date, 'yyyy-mm') desc
+-- покупатели по месяцам
+
+WITH first_purchases AS (
+    SELECT 
+        s.customer_id,
+        s.sale_date,
+        s.sales_person_id,
+        s.product_id,
+        ROW_NUMBER() OVER (PARTITION BY s.customer_id ORDER BY s.sale_date) as purchase_rank
+    FROM sales s
+)
+SELECT 
+    CONCAT(c.first_name, ' ', c.last_name) AS customer,
+    fp.sale_date AS sale_date,
+    CONCAT(e.first_name, ' ', e.last_name) AS seller
+FROM first_purchases fp
+INNER JOIN customers c ON c.customer_id = fp.customer_id
+INNER JOIN employees e ON e.employee_id = fp.sales_person_id
+INNER JOIN products p ON p.product_id = fp.product_id
+WHERE fp.purchase_rank = 1 AND p.price = 0
+ORDER BY fp.customer_id;
+--первыпе покупки по акции
