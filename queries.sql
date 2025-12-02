@@ -41,7 +41,7 @@ from sales s
 inner join employees e on e.employee_id = s.sales_person_id
 inner join products p on p.product_id = s.product_id
 group by e.first_name, e.last_name, EXTRACT(dow FROM s.sale_date)
-order by extract(dow from s.sale_date), seller 
+order by mod(extract(dow from s.sale_date)::int + 6, 7), seller
 -- по дням недели
 
 SELECT (case
