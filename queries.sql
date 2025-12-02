@@ -19,7 +19,7 @@ from sales s
 inner join employees e on e.employee_id = s.sales_person_id
 inner join products p on p.product_id = s.product_id
 group by seller
-having avg(s.quantity*p.price) > ( select avg(s.quantity*p.price) from sales s 
+having avg(s.quantity*p.price) < ( select avg(s.quantity*p.price) from sales s 
 inner join employees e on e.employee_id = s.sales_person_id
 inner join products p on p.product_id = s.product_id
 )
@@ -61,7 +61,7 @@ floor(sum(s.quantity*p.price)) as income
 from sales s 
 inner join products p on p.product_id = s.product_id
 group by to_char(s.sale_date, 'yyyy-mm')
-order by to_char(s.sale_date, 'yyyy-mm') desc
+order by to_char(s.sale_date, 'yyyy-mm') asc
 -- покупатели по месяцам
 
 WITH first_purchases AS (
