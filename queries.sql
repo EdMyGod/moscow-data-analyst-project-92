@@ -25,7 +25,6 @@ GROUP BY seller
 HAVING avg(s.quantity * p.price) <
   (SELECT avg(s.quantity*p.price)
    FROM sales s
-   INNER JOIN employees e ON e.employee_id = s.sales_person_id
    INNER JOIN products p ON p.product_id = s.product_id)
 ORDER BY average_income ASC 
 	
