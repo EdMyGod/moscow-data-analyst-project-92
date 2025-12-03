@@ -1,7 +1,8 @@
+-- подсчет строк
 SELECT Count(*) as customers_count
 FROM public.customers;
--- подсчет строк
 
+-- топ 10 продавцов
 SELECT concat(e.first_name,' ',e.last_name) as seller,
 count(s.customer_id) as operations,
 floor(sum(s.quantity*p.price)) as income
@@ -11,21 +12,23 @@ inner join products p on p.product_id = s.product_id
 group by seller
 order by income desc 
 limit 10
--- топ 10 продавцов
 
+
+-- продавцы с прибылью ниже среднего
 SELECT concat(e.first_name,' ',e.last_name) as seller,
-floor(avg(s.quantity*p.price)) as average_income
+floor(avg(s.quantity * p.price)) as average_income
 from sales s 
 inner join employees e on e.employee_id = s.sales_person_id
 inner join products p on p.product_id = s.product_id
 group by seller
-having avg(s.quantity*p.price) < ( select avg(s.quantity*p.price) from sales s 
+having avg(s.quantity * p.price) < ( select avg(s.quantity*p.price) from sales s 
 inner join employees e on e.employee_id = s.sales_person_id
 inner join products p on p.product_id = s.product_id
 )
 order by average_income asc 
--- продавцы с прибылью ниже среднего
 
+ 
+-- по дням недели
 SELECT concat(e.first_name,' ',e.last_name) as seller,
 (case 
 	when extract(dow from s.sale_date) = 1 then 'monday'
@@ -42,8 +45,8 @@ inner join employees e on e.employee_id = s.sales_person_id
 inner join products p on p.product_id = s.product_id
 group by e.first_name, e.last_name, EXTRACT(dow FROM s.sale_date)
 order by mod(extract(dow from s.sale_date)::int + 6, 7), seller
--- по дням недели
 
+-- группы возрастов
 SELECT (case
 	when customers.age <= 25 then '16-25' 
 	when customers.age <= 40 then '26-40' 
@@ -53,8 +56,8 @@ Count(*) as age_count
 FROM public.customers
 group by age_category
 order by age_category 
--- группы возрастов
 
+-- покупатели по месяцам
 select to_char(s.sale_date, 'yyyy-mm') as selling_month,
 count(distinct s.customer_id) as total_customers,
 floor(sum(s.quantity*p.price)) as income
@@ -62,8 +65,9 @@ from sales s
 inner join products p on p.product_id = s.product_id
 group by to_char(s.sale_date, 'yyyy-mm')
 order by to_char(s.sale_date, 'yyyy-mm') asc
--- покупатели по месяцам
 
+
+--первые покупки по акции
 WITH first_purchases AS (
     SELECT 
         s.customer_id,
@@ -83,4 +87,3 @@ INNER JOIN employees e ON e.employee_id = fp.sales_person_id
 INNER JOIN products p ON p.product_id = fp.product_id
 WHERE fp.purchase_rank = 1 AND p.price = 0
 ORDER BY fp.customer_id;
---первыпе покупки по акции
