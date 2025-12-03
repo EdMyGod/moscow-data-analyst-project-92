@@ -28,13 +28,13 @@ order by average_income asc
 
 SELECT concat(e.first_name,' ',e.last_name) as seller,
 (case 
-	when extract(dow from s.sale_date) = 0 then 'monday'
-	when extract(dow from s.sale_date) = 1 then 'tuesday'
-	when extract(dow from s.sale_date) = 2 then 'wednesday'
-	when extract(dow from s.sale_date) = 3 then 'thursday'
-	when extract(dow from s.sale_date) = 4 then 'friday'
-	when extract(dow from s.sale_date) = 5 then 'saturday'
-	when extract(dow from s.sale_date) = 6 then 'sunday'
+	when extract(dow from s.sale_date) = 1 then 'monday'
+	when extract(dow from s.sale_date) = 2 then 'tuesday  '
+	when extract(dow from s.sale_date) = 3 then 'wednesday'
+	when extract(dow from s.sale_date) = 4 then 'thursday '
+	when extract(dow from s.sale_date) = 5 then 'friday'
+	when extract(dow from s.sale_date) = 6 then 'saturday '
+	when extract(dow from s.sale_date) = 0 then 'sunday'
 end) as day_of_week,
 floor(sum(s.quantity*p.price)) as income
 from sales s 
