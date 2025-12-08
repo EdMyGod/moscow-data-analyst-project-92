@@ -1,6 +1,7 @@
 -- подсчет строк
 SELECT COUNT(*) AS customers_count
 FROM public.customers;
+
 -- топ 10 продавцов
 SELECT
     CONCAT(e.first_name, ' ', e.last_name) AS seller,
@@ -11,7 +12,8 @@ INNER JOIN employees AS e ON s.sales_person_id = e.employee_id
 INNER JOIN products AS p ON s.product_id = p.product_id
 GROUP BY seller
 ORDER BY income DESC
-LIMIT 10
+LIMIT 10;
+
 -- продавцы с прибылью ниже среднего
 SELECT
     CONCAT(e.first_name, ' ', e.last_name) AS seller,
@@ -27,7 +29,7 @@ HAVING
         FROM sales AS s1
         INNER JOIN products AS p1 ON s.product_id = p.product_id
     )
-ORDER BY average_income ASC
+ORDER BY average_income ASC;
 	
 -- по дням недели
 SELECT
@@ -77,7 +79,7 @@ ORDER BY mod(extract(
     DOW
     FROM s.sale_date
 )::int + 6, 7),
-seller
+seller;
 	
 -- группы возрастов
 SELECT
@@ -89,7 +91,7 @@ SELECT
     Count(*) AS age_count
 FROM public.customers
 GROUP BY age_category
-ORDER BY age_category
+ORDER BY age_category;
 	
 -- покупатели по месяцам
 SELECT
@@ -99,7 +101,7 @@ SELECT
 FROM sales AS s
 INNER JOIN products AS p ON s.product_id = p.product_id
 GROUP BY to_char(s.sale_date, 'yyyy-mm')
-ORDER BY to_char(s.sale_date, 'yyyy-mm') ASC
+ORDER BY to_char(s.sale_date, 'yyyy-mm') ASC;
 
 --первые покупки по акции
 WITH first_purchases AS (
@@ -112,7 +114,7 @@ WITH first_purchases AS (
             PARTITION BY s.customer_id
             ORDER BY s.sale_date
         ) AS purchase_rank
-    FROM sales AS s
+    FROM sales AS s;
 )
 
 SELECT
