@@ -34,15 +34,15 @@ SELECT concat(e.first_name, ' ', e.last_name) AS seller,
             WHEN extract(dow
                          FROM s.sale_date) = 1 THEN 'monday'
             WHEN extract(dow
-                         FROM s.sale_date) = 2 THEN 'tuesday  '
+                         FROM s.sale_date) = 2 THEN 'tuesday'
             WHEN extract(dow
                          FROM s.sale_date) = 3 THEN 'wednesday'
             WHEN extract(dow
-                         FROM s.sale_date) = 4 THEN 'thursday '
+                         FROM s.sale_date) = 4 THEN 'thursday'
             WHEN extract(dow
                          FROM s.sale_date) = 5 THEN 'friday'
             WHEN extract(dow
-                         FROM s.sale_date) = 6 THEN 'saturday '
+                         FROM s.sale_date) = 6 THEN 'saturday'
             WHEN extract(dow
                          FROM s.sale_date) = 0 THEN 'sunday'
         END) AS day_of_week,
