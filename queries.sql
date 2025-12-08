@@ -129,4 +129,3 @@ WHERE
     fp.purchase_rank = 1
     AND p.price = 0
 ORDER BY fp.customer_id;
-
