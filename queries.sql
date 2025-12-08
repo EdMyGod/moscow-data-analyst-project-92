@@ -1,23 +1,21 @@
 -- подсчет строк
 SELECT COUNT(*) AS customers_count
 FROM public.customers;
-
 -- топ 10 продавцов
 SELECT
-    concat(e.first_name, ' ', e.last_name) AS seller,
-    count(s.customer_id) AS operations,
-    floor(sum(s.quantity * p.price)) AS income
+    CONCAT(e.first_name, ' ', e.last_name) AS seller,
+    COUNT(s.customer_id) AS operations,
+    FLOOR(SUM(s.quantity * p.price)) AS income
 FROM sales AS s
 INNER JOIN employees AS e ON s.sales_person_id = e.employee_id
 INNER JOIN products AS p ON s.product_id = p.product_id
 GROUP BY seller
 ORDER BY income DESC
 LIMIT 10
-	
 -- продавцы с прибылью ниже среднего
-SELECT
-    concat(e.first_name, ' ', e.last_name) AS seller,
-    floor(avg(s.quantity * p.price)) AS average_income
+SELECT 
+CONCAT(e.first_name, ' ', e.last_name) AS seller,
+    FLOOR(AVG(s.quantity * p.price)) AS average_income
 FROM sales AS s
 INNER JOIN employees AS e ON s.sales_person_id = e.employee_id
 INNER JOIN products AS p ON s.product_id = p.product_id
