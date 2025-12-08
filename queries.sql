@@ -27,60 +27,60 @@ HAVING
     < (
         SELECT AVG(s1.quantity * p1.price)
         FROM sales AS s1
-        INNER JOIN products AS p1 ON s.product_id = p.product_id
+        INNER JOIN products AS p1 ON s1.product_id = p1.product_id
     )
 ORDER BY average_income ASC;
-	
+
 -- по дням недели
 SELECT
-    concat(e.first_name, ' ', e.last_name) AS seller,
+    CONCAT(e.first_name, ' ', e.last_name) AS seller,
     (CASE
-        WHEN extract(
+        WHEN EXTRACT(
             DOW
             FROM s.sale_date
         ) = 1 THEN 'monday'
-        WHEN extract(
+        WHEN EXTRACT(
             DOW
             FROM s.sale_date
         ) = 2 THEN 'tuesday'
-        WHEN extract(
+        WHEN EXTRACT(
             DOW
             FROM s.sale_date
         ) = 3 THEN 'wednesday'
-        WHEN extract(
+        WHEN EXTRACT(
             DOW
             FROM s.sale_date
         ) = 4 THEN 'thursday'
-        WHEN extract(
+        WHEN EXTRACT(
             DOW
             FROM s.sale_date
         ) = 5 THEN 'friday'
-        WHEN extract(
+        WHEN EXTRACT(
             DOW
             FROM s.sale_date
         ) = 6 THEN 'saturday'
-        WHEN extract(
+        WHEN EXTRACT(
             DOW
             FROM s.sale_date
         ) = 0 THEN 'sunday'
     END) AS day_of_week,
-    floor(sum(s.quantity * p.price)) AS income
+    FLOOR(SUM(s.quantity * p.price)) AS income
 FROM sales AS s
 INNER JOIN employees AS e ON s.sales_person_id = e.employee_id
 INNER JOIN products AS p ON s.product_id = p.product_id
 GROUP BY
     e.first_name,
     e.last_name,
-    extract(
+    EXTRACT(
         DOW
         FROM s.sale_date
     )
-ORDER BY mod(extract(
+ORDER BY MOD(EXTRACT(
     DOW
     FROM s.sale_date
 )::int + 6, 7),
 seller;
-	
+
 -- группы возрастов
 SELECT
     (CASE
@@ -88,20 +88,20 @@ SELECT
         WHEN customers.age <= 40 THEN '26-40'
         ELSE '40+'
     END) AS age_category,
-    Count(*) AS age_count
+    COUNT(*) AS age_count
 FROM public.customers
 GROUP BY age_category
 ORDER BY age_category;
-	
+
 -- покупатели по месяцам
 SELECT
-    to_char(s.sale_date, 'yyyy-mm') AS selling_month,
-    count(DISTINCT s.customer_id) AS total_customers,
-    floor(sum(s.quantity * p.price)) AS income
+    TO_CHAR(s.sale_date, 'yyyy-mm') AS selling_month,
+    COUNT(DISTINCT s.customer_id) AS total_customers,
+    FLOOR(SUM(s.quantity * p.price)) AS income
 FROM sales AS s
 INNER JOIN products AS p ON s.product_id = p.product_id
-GROUP BY to_char(s.sale_date, 'yyyy-mm')
-ORDER BY to_char(s.sale_date, 'yyyy-mm') ASC;
+GROUP BY TO_CHAR(s.sale_date, 'yyyy-mm')
+ORDER BY TO_CHAR(s.sale_date, 'yyyy-mm') ASC;
 
 --первые покупки по акции
 WITH first_purchases AS (
@@ -114,7 +114,7 @@ WITH first_purchases AS (
             PARTITION BY s.customer_id
             ORDER BY s.sale_date
         ) AS purchase_rank
-    FROM sales AS s;
+    FROM sales AS s
 )
 
 SELECT
@@ -129,3 +129,4 @@ WHERE
     fp.purchase_rank = 1
     AND p.price = 0
 ORDER BY fp.customer_id;
+
